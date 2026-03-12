@@ -9,13 +9,17 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
+import { useConnectionStore } from '@/store/connectionStore';
 import { getApiService } from '@/services';
 import StatCard from '@/components/StatCard';
 import TapModal from '@/components/TapModal';
 
 export default function PerfilScreen() {
+  const router = useRouter();
   const { user, logout, updateUser, isGuest } = useAuthStore();
+  const { setOnline, setHasChecked } = useConnectionStore();
 
   // Estado para editar nombre
   const [nuevoNombre, setNuevoNombre] = useState('');
@@ -30,6 +34,34 @@ export default function PerfilScreen() {
 
   // Estado para modal de TAP
   const [showTapModal, setShowTapModal] = useState(false);
+
+  // Estado para comprobar conexión al intentar iniciar sesión
+  const [isCheckingConnection, setIsCheckingConnection] = useState(false);
+
+  const handleGuestLogin = async () => {
+    setIsCheckingConnection(true);
+    try {
+      const api = getApiService();
+      const online = await api.checkConnection();
+      setOnline(online);
+
+      if (online) {
+        // Hay conexión → logout del guest e ir a login
+        setHasChecked();
+        await logout();
+      } else {
+        // No hay conexión → mostrar modal de reconexión
+        await logout();
+        router.push('/connection-modal');
+      }
+    } catch {
+      // Error inesperado → mostrar modal de reconexión
+      await logout();
+      router.push('/connection-modal');
+    } finally {
+      setIsCheckingConnection(false);
+    }
+  };
 
   const emisionesKg = user?.emisionesReducidas ?? 0;
   const emisionesTon = emisionesKg / 1000;
@@ -278,13 +310,23 @@ export default function PerfilScreen() {
       {/* Acciones */}
       <View className="mx-4 mt-6 mb-10 gap-3">
         {isGuest ? (
-          // Guest: ofrecer ir a login
+          // Guest: comprobar conexión antes de ir a login
           <Pressable
-            onPress={() => logout()}
+            onPress={handleGuestLogin}
+            disabled={isCheckingConnection}
             className="bg-green-600 rounded-xl py-4 items-center active:bg-green-700">
-            <Text className="text-white font-semibold">
-              Iniciar sesión / Registrarse
-            </Text>
+            {isCheckingConnection ? (
+              <View className="flex-row items-center gap-2">
+                <ActivityIndicator color="white" size="small" />
+                <Text className="text-white font-semibold">
+                  Comprobando conexion...
+                </Text>
+              </View>
+            ) : (
+              <Text className="text-white font-semibold">
+                Iniciar sesion / Registrarse
+              </Text>
+            )}
           </Pressable>
         ) : (
           // Usuario registrado: cerrar sesión + eliminar cuenta
