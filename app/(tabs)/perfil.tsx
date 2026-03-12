@@ -12,9 +12,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '@/store/authStore';
 import { getApiService } from '@/services';
 import StatCard from '@/components/StatCard';
+import TapModal from '@/components/TapModal';
 
 export default function PerfilScreen() {
-  const { user, logout, updateUser } = useAuthStore();
+  const { user, logout, updateUser, isGuest } = useAuthStore();
 
   // Estado para editar nombre
   const [nuevoNombre, setNuevoNombre] = useState('');
@@ -26,6 +27,9 @@ export default function PerfilScreen() {
   const [passwordNueva, setPasswordNueva] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+
+  // Estado para modal de TAP
+  const [showTapModal, setShowTapModal] = useState(false);
 
   const emisionesKg = user?.emisionesReducidas ?? 0;
   const emisionesTon = emisionesKg / 1000;
@@ -136,9 +140,24 @@ export default function PerfilScreen() {
           {user?.nombre ?? 'offline'}
         </Text>
         <Text className="text-green-100 text-sm mt-1">
-          {user?.permisos === 'administrador' ? 'Administrador' : 'Cliente'}
+          {isGuest
+            ? 'Modo offline — Invitado'
+            : user?.permisos === 'administrador'
+              ? 'Administrador'
+              : 'Cliente'}
         </Text>
       </View>
+
+      {/* Banner invitado */}
+      {isGuest && (
+        <View className="mx-4 mt-4 bg-amber-50 border border-amber-300 rounded-xl p-3 flex-row items-center">
+          <Ionicons name="information-circle" size={22} color="#d97706" />
+          <Text className="text-amber-800 text-sm ml-2 flex-1">
+            Estás en modo invitado. Inicia sesión para guardar tu progreso y
+            acceder a todas las funciones.
+          </Text>
+        </View>
+      )}
 
       {/* Stats */}
       <View className="flex-row px-4 mt-4 gap-3">
@@ -155,90 +174,134 @@ export default function PerfilScreen() {
         />
       </View>
 
-      {/* Editar nombre */}
-      <View className="mx-4 mt-6 bg-white rounded-xl p-4 border border-gray-100">
-        <Text className="text-base font-semibold text-gray-800 mb-3">
-          Editar nombre
-        </Text>
-        <TextInput
-          value={nuevoNombre}
-          onChangeText={setNuevoNombre}
-          placeholder="Nuevo nombre de usuario"
-          autoCapitalize="none"
-          className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-2"
-        />
-        <TextInput
-          value={passwordNombre}
-          onChangeText={setPasswordNombre}
-          placeholder="Contraseña actual"
-          secureTextEntry
-          className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-3"
-        />
-        <Pressable
-          onPress={handleUpdateNombre}
-          disabled={isUpdatingNombre}
-          className="bg-green-600 rounded-lg py-3 items-center active:bg-green-700">
-          {isUpdatingNombre ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text className="text-white font-semibold">Guardar nombre</Text>
-          )}
-        </Pressable>
-      </View>
+      {/* Botón consultar TAP */}
+      <Pressable
+        onPress={() => setShowTapModal(true)}
+        className="mx-4 mt-4 bg-white rounded-xl p-4 border border-gray-100 flex-row items-center active:bg-gray-50">
+        <View className="bg-green-100 rounded-full p-2 mr-3">
+          <Ionicons name="shield-checkmark" size={22} color="#16a34a" />
+        </View>
+        <View className="flex-1">
+          <Text className="text-base font-semibold text-gray-800">
+            Consultar TAP
+          </Text>
+          <Text className="text-sm text-gray-500">
+            Token de Autenticacion Personal
+          </Text>
+        </View>
+        <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+      </Pressable>
 
-      {/* Cambiar contraseña */}
-      <View className="mx-4 mt-4 bg-white rounded-xl p-4 border border-gray-100">
-        <Text className="text-base font-semibold text-gray-800 mb-3">
-          Cambiar contraseña
-        </Text>
-        <TextInput
-          value={passwordActual}
-          onChangeText={setPasswordActual}
-          placeholder="Contraseña actual"
-          secureTextEntry
-          className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-2"
-        />
-        <TextInput
-          value={passwordNueva}
-          onChangeText={setPasswordNueva}
-          placeholder="Nueva contraseña"
-          secureTextEntry
-          className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-2"
-        />
-        <TextInput
-          value={passwordConfirm}
-          onChangeText={setPasswordConfirm}
-          placeholder="Confirmar nueva contraseña"
-          secureTextEntry
-          className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-3"
-        />
-        <Pressable
-          onPress={handleUpdatePassword}
-          disabled={isUpdatingPassword}
-          className="bg-green-600 rounded-lg py-3 items-center active:bg-green-700">
-          {isUpdatingPassword ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text className="text-white font-semibold">
-              Cambiar contraseña
-            </Text>
-          )}
-        </Pressable>
-      </View>
+      {/* Modal TAP */}
+      <TapModal
+        visible={showTapModal}
+        onClose={() => setShowTapModal(false)}
+        tap={user?.tap ?? null}
+        isGuest={isGuest}
+      />
 
-      {/* Acciones peligrosas */}
+      {/* Editar nombre — solo usuarios registrados */}
+      {!isGuest && (
+        <View className="mx-4 mt-6 bg-white rounded-xl p-4 border border-gray-100">
+          <Text className="text-base font-semibold text-gray-800 mb-3">
+            Editar nombre
+          </Text>
+          <TextInput
+            value={nuevoNombre}
+            onChangeText={setNuevoNombre}
+            placeholder="Nuevo nombre de usuario"
+            autoCapitalize="none"
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-2"
+          />
+          <TextInput
+            value={passwordNombre}
+            onChangeText={setPasswordNombre}
+            placeholder="Contraseña actual"
+            secureTextEntry
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-3"
+          />
+          <Pressable
+            onPress={handleUpdateNombre}
+            disabled={isUpdatingNombre}
+            className="bg-green-600 rounded-lg py-3 items-center active:bg-green-700">
+            {isUpdatingNombre ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text className="text-white font-semibold">Guardar nombre</Text>
+            )}
+          </Pressable>
+        </View>
+      )}
+
+      {/* Cambiar contraseña — solo usuarios registrados */}
+      {!isGuest && (
+        <View className="mx-4 mt-4 bg-white rounded-xl p-4 border border-gray-100">
+          <Text className="text-base font-semibold text-gray-800 mb-3">
+            Cambiar contraseña
+          </Text>
+          <TextInput
+            value={passwordActual}
+            onChangeText={setPasswordActual}
+            placeholder="Contraseña actual"
+            secureTextEntry
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-2"
+          />
+          <TextInput
+            value={passwordNueva}
+            onChangeText={setPasswordNueva}
+            placeholder="Nueva contraseña"
+            secureTextEntry
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-2"
+          />
+          <TextInput
+            value={passwordConfirm}
+            onChangeText={setPasswordConfirm}
+            placeholder="Confirmar nueva contraseña"
+            secureTextEntry
+            className="border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-50 mb-3"
+          />
+          <Pressable
+            onPress={handleUpdatePassword}
+            disabled={isUpdatingPassword}
+            className="bg-green-600 rounded-lg py-3 items-center active:bg-green-700">
+            {isUpdatingPassword ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text className="text-white font-semibold">
+                Cambiar contraseña
+              </Text>
+            )}
+          </Pressable>
+        </View>
+      )}
+
+      {/* Acciones */}
       <View className="mx-4 mt-6 mb-10 gap-3">
-        <Pressable
-          onPress={handleLogout}
-          className="bg-gray-200 rounded-xl py-4 items-center active:bg-gray-300">
-          <Text className="text-gray-700 font-semibold">Cerrar sesión</Text>
-        </Pressable>
+        {isGuest ? (
+          // Guest: ofrecer ir a login
+          <Pressable
+            onPress={() => logout()}
+            className="bg-green-600 rounded-xl py-4 items-center active:bg-green-700">
+            <Text className="text-white font-semibold">
+              Iniciar sesión / Registrarse
+            </Text>
+          </Pressable>
+        ) : (
+          // Usuario registrado: cerrar sesión + eliminar cuenta
+          <>
+            <Pressable
+              onPress={handleLogout}
+              className="bg-gray-200 rounded-xl py-4 items-center active:bg-gray-300">
+              <Text className="text-gray-700 font-semibold">Cerrar sesión</Text>
+            </Pressable>
 
-        <Pressable
-          onPress={handleDeleteAccount}
-          className="bg-red-100 rounded-xl py-4 items-center active:bg-red-200">
-          <Text className="text-red-600 font-semibold">Eliminar cuenta</Text>
-        </Pressable>
+            <Pressable
+              onPress={handleDeleteAccount}
+              className="bg-red-100 rounded-xl py-4 items-center active:bg-red-200">
+              <Text className="text-red-600 font-semibold">Eliminar cuenta</Text>
+            </Pressable>
+          </>
+        )}
       </View>
     </ScrollView>
   );
