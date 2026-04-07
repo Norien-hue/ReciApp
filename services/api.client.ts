@@ -1,5 +1,6 @@
-// Implementacion real del servicio API — conecta al backend Express
+// Implementacion real del servicio API — conecta al backend Spring Boot
 
+import { Platform } from 'react-native';
 import type { ApiService } from './api';
 import type {
   AuthResponse,
@@ -8,7 +9,25 @@ import type {
   HistorialItem,
 } from '@/types';
 
-const API_BASE_URL = 'http://localhost:3000/api';
+// La API corre en WSL. Cada plataforma necesita una URL distinta:
+// - Web: localhost funciona (WSL2 reenvía automaticamente)
+// - Android emulator: necesita la IP de WSL directamente
+//   Para obtenerla: wsl -e hostname -I (primer valor)
+// - iOS / dispositivo fisico: usa la IP LAN del host
+//
+// Esta IP se actualiza automaticamente por start.py
+// Para actualizar manualmente: wsl -e hostname -I (primer valor)
+const WSL_IP = '172.31.168.208';
+
+function getApiBaseUrl(): string {
+  if (Platform.OS === 'android') {
+    return `http://${WSL_IP}:3000/api`;
+  }
+  // Web e iOS usan localhost
+  return 'http://localhost:3000/api';
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 export class RealApiService implements ApiService {
   private token: string | null = null;
@@ -38,12 +57,19 @@ export class RealApiService implements ApiService {
 
   async checkConnection(): Promise<boolean> {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+      console.log(`[API] Checking connection to: ${API_BASE_URL}/health`);
       const response = await fetch(`${API_BASE_URL}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(3000),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
+      console.log(`[API] Health response status: ${response.status}`);
       return response.ok;
-    } catch {
+    } catch (e) {
+      console.log(`[API] Connection check failed:`, e);
       return false;
     }
   }
