@@ -9,22 +9,12 @@ import type {
   HistorialItem,
 } from '@/types';
 
-// La API corre en WSL. Cada plataforma necesita una URL distinta:
-// - Web: localhost funciona (WSL2 reenvía automaticamente)
-// - Android emulator: necesita la IP de WSL directamente
-//   Para obtenerla: wsl -e hostname -I (primer valor)
-// - iOS / dispositivo fisico: usa la IP LAN del host
-//
-// Esta IP se actualiza automaticamente por start.py
-// Para actualizar manualmente: wsl -e hostname -I (primer valor)
-const WSL_IP = '172.31.168.208';
+// IP publica de la EC2 donde corre la API Spring Boot
+// Cambiar si la instancia cambia de IP o se usa un dominio
+const EC2_IP = '52.201.91.206';
 
 function getApiBaseUrl(): string {
-  if (Platform.OS === 'android') {
-    return `http://${WSL_IP}:3000/api`;
-  }
-  // Web e iOS usan localhost
-  return 'http://localhost:3000/api';
+  return `http://${EC2_IP}:3000/api`;
 }
 
 const API_BASE_URL = getApiBaseUrl();
