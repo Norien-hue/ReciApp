@@ -4,3 +4,4 @@ build/
 *.class
 *.jar
 !gradle/wrapper/*.jar
+!build/libs/reciapp-api-*.jar
