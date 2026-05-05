@@ -233,7 +233,7 @@ export default function PerfilScreen() {
       />
 
       {/* Editar nombre — solo usuarios registrados */}
-      {!isGuest && (
+      {!isGuest ? (
         <View className="mx-4 mt-6 bg-white rounded-xl p-4 border border-gray-100">
           <Text className="text-base font-semibold text-gray-800 mb-3">
             Editar nombre
@@ -263,6 +263,29 @@ export default function PerfilScreen() {
             )}
           </Pressable>
         </View>
+      ) : (
+        /* Aviso de login en lugar de las secciones de edición */
+        <Pressable
+          onPress={handleGuestLogin}
+          disabled={isCheckingConnection}
+          className="mx-4 mt-6 bg-white rounded-xl p-5 border border-gray-100 items-center active:bg-gray-50">
+          <View className="bg-gray-100 rounded-full p-3 mb-3">
+            <Ionicons name="lock-closed" size={28} color="#6b7280" />
+          </View>
+          <Text className="text-gray-800 font-semibold text-base text-center">
+            Inicia sesión para editar tu perfil
+          </Text>
+          <Text className="text-gray-500 text-sm text-center mt-1">
+            Cambia tu nombre, contraseña y gestiona tu cuenta.
+          </Text>
+          <View className="mt-4 bg-green-600 rounded-lg px-6 py-2.5">
+            {isCheckingConnection ? (
+              <ActivityIndicator color="white" size="small" />
+            ) : (
+              <Text className="text-white font-semibold">Iniciar sesión</Text>
+            )}
+          </View>
+        </Pressable>
       )}
 
       {/* Cambiar contraseña — solo usuarios registrados */}

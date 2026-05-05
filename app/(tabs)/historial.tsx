@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { View, FlatList, ActivityIndicator, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '@/store/authStore';
 import { useRecycleStore } from '@/store/recycleStore';
 import RecycleHistoryItem from '@/components/RecycleHistoryItem';
 import EmptyState from '@/components/EmptyState';
 
 export default function HistorialScreen() {
-  const user = useAuthStore((s) => s.user);
+  const { user, isGuest } = useAuthStore((s) => ({ user: s.user, isGuest: s.isGuest }));
   const { historial, isLoading, fetchHistorial } = useRecycleStore();
 
   useEffect(() => {
@@ -30,6 +31,16 @@ export default function HistorialScreen() {
           {totalEmisiones.toFixed(1)} kg CO₂
         </Text>
       </View>
+
+      {/* Banner invitado */}
+      {isGuest && (
+        <View className="mx-4 mt-3 bg-amber-50 border border-amber-300 rounded-xl p-3 flex-row items-center">
+          <Ionicons name="lock-closed-outline" size={20} color="#d97706" />
+          <Text className="text-amber-800 text-sm ml-2 flex-1">
+            Estás viendo datos de ejemplo. Inicia sesión para ver tu historial real.
+          </Text>
+        </View>
+      )}
 
       {isLoading ? (
         <View className="flex-1 justify-center items-center">
