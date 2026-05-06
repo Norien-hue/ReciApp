@@ -32,6 +32,14 @@ public class ProductoController {
         return ResponseEntity.ok(service.search(query, userId));
     }
 
+    @GetMapping("/barcode/{barras}")
+    public ResponseEntity<ProductoDto> getByBarcode(
+            @PathVariable Long barras,
+            Authentication auth) {
+        Integer userId = (Integer) auth.getPrincipal();
+        return ResponseEntity.ok(service.getByBarcode(barras, userId));
+    }
+
     @GetMapping("/{tipo}/{barras}")
     public ResponseEntity<ProductoDto> getOne(
             @PathVariable String tipo,

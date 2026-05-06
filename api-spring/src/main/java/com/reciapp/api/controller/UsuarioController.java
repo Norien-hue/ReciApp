@@ -50,6 +50,11 @@ public class UsuarioController {
         return ResponseEntity.ok(Map.of("message", "Contraseña actualizada correctamente"));
     }
 
+    @GetMapping("/by-tap/{tap}")
+    public ResponseEntity<UsuarioDto> getByTap(@PathVariable Integer tap) {
+        return ResponseEntity.ok(service.getByTap(tap));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteAccount(
             @PathVariable Integer id,

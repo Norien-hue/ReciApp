@@ -56,6 +56,12 @@ public class UsuarioService {
         return UsuarioDto.from(user);
     }
 
+    public UsuarioDto getByTap(Integer tap) {
+        var user = repo.findByTap(tap)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró usuario con ese TAP"));
+        return UsuarioDto.from(user);
+    }
+
     public UsuarioDto updateNombre(Integer id, UpdateNombreRequest req) {
         var user = repo.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));

@@ -72,6 +72,44 @@ router.get('/search', verifyToken, async (req, res) => {
   }
 });
 
+// GET /api/productos/barcode/:barras — buscar producto solo por numero de barras
+router.get('/barcode/:barras', verifyToken, async (req, res) => {
+  try {
+    const { barras } = req.params;
+    const userId = req.user.id;
+    const [rows] = await pool.query(
+      `SELECT p.Tipo, p.Numero_barras, p.Nombre, p.Emisiones_Reducibles,
+              p.Material, p.Imagen,
+              COUNT(r.Id_Usuario) AS vecesReciclado
+       FROM Productos p
+       LEFT JOIN Recicla r ON p.Tipo = r.Tipo
+         AND p.Numero_barras = r.Numero_barras
+         AND r.Id_Usuario = ?
+       WHERE p.Numero_barras = ?
+       GROUP BY p.Tipo, p.Numero_barras`,
+      [userId, barras]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+
+    const r = rows[0];
+    res.json({
+      tipo: r.Tipo,
+      numeroBarras: String(r.Numero_barras),
+      nombre: r.Nombre,
+      emisionesReducibles: r.Emisiones_Reducibles,
+      material: r.Material,
+      imagen: r.Imagen,
+      vecesReciclado: r.vecesReciclado,
+    });
+  } catch (err) {
+    console.error('Error buscando producto por barras:', err);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // GET /api/productos/:tipo/:barras — detalle de un producto
 router.get('/:tipo/:barras', verifyToken, async (req, res) => {
   try {

@@ -198,6 +198,31 @@ router.put('/:id/password', verifyToken, async (req, res) => {
   }
 });
 
+// GET /api/usuarios/by-tap/:tap — buscar usuario por TAP
+router.get('/by-tap/:tap', verifyToken, async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT Id_Usuario, Nombre, Permisos, Emisiones_Reducidas, TAP FROM Usuarios WHERE TAP = ?',
+      [req.params.tap]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'No se encontró usuario con ese TAP' });
+    }
+
+    const u = rows[0];
+    res.json({
+      id: u.Id_Usuario,
+      nombre: u.Nombre,
+      permisos: u.Permisos,
+      emisionesReducidas: u.Emisiones_Reducidas || 0,
+      tap: u.TAP,
+    });
+  } catch (err) {
+    console.error('Error buscando usuario por TAP:', err);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // DELETE /api/usuarios/:id
 router.delete('/:id', verifyToken, async (req, res) => {
   try {

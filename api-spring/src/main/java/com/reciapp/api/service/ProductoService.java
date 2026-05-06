@@ -40,6 +40,12 @@ public class ProductoService {
         return toDto(producto, userId);
     }
 
+    public ProductoDto getByBarcode(Long numeroBarras, Integer userId) {
+        var producto = productoRepo.findFirstByNumeroBarras(numeroBarras)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
+        return toDto(producto, userId);
+    }
+
     private ProductoDto toDto(Producto p, Integer userId) {
         long count = reciclaRepo.countByIdUsuarioAndTipoAndNumeroBarras(
             userId, p.getTipo(), p.getNumeroBarras()

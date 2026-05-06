@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByNombre(String nombre);
     boolean existsByNombre(String nombre);
+    Optional<Usuario> findByTap(Integer tap);
 }
