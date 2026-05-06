@@ -9,4 +9,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByNombre(String nombre);
     boolean existsByNombre(String nombre);
     Optional<Usuario> findByTap(Integer tap);
+    boolean existsByTap(Integer tap);
 }

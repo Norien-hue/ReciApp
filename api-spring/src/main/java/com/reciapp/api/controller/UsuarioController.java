@@ -55,6 +55,11 @@ public class UsuarioController {
         return ResponseEntity.ok(service.getByTap(tap));
     }
 
+    @PutMapping("/{id}/tap")
+    public ResponseEntity<UsuarioDto> requestTap(@PathVariable Integer id) {
+        return ResponseEntity.ok(service.requestTap(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteAccount(
             @PathVariable Integer id,

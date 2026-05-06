@@ -38,4 +38,7 @@ export interface ApiService {
     passwordNueva: string
   ): Promise<void>;
   deleteAccount(idUsuario: number, passwordActual: string): Promise<void>;
+
+  // TAP
+  requestTap(idUsuario: number): Promise<Usuario>;
 }

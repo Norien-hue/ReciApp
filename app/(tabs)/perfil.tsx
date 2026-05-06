@@ -34,6 +34,7 @@ export default function PerfilScreen() {
 
   // Estado para modal de TAP
   const [showTapModal, setShowTapModal] = useState(false);
+  const [isRequestingTap, setIsRequestingTap] = useState(false);
 
   // Estado para comprobar conexión al intentar iniciar sesión
   const [isCheckingConnection, setIsCheckingConnection] = useState(false);
@@ -122,6 +123,23 @@ export default function PerfilScreen() {
       Alert.alert('Error', e.message || 'No se pudo cambiar la contraseña.');
     } finally {
       setIsUpdatingPassword(false);
+    }
+  };
+
+  const handleRequestTap = async () => {
+    setIsRequestingTap(true);
+    try {
+      const api = getApiService();
+      const updated = await api.requestTap(user!.id);
+      updateUser(updated);
+      Alert.alert(
+        'TAP asignado',
+        `Tu nuevo TAP es: ${updated.tap}\nGuárdalo en un lugar seguro.`
+      );
+    } catch (e: any) {
+      Alert.alert('Error', e.message || 'No se pudo solicitar el TAP.');
+    } finally {
+      setIsRequestingTap(false);
     }
   };
 
@@ -230,6 +248,8 @@ export default function PerfilScreen() {
         onClose={() => setShowTapModal(false)}
         tap={user?.tap ?? null}
         isGuest={isGuest}
+        onRequestTap={handleRequestTap}
+        isRequestingTap={isRequestingTap}
       />
 
       {/* Editar nombre — solo usuarios registrados */}

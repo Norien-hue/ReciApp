@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Random;
+
 @Service
 public class UsuarioService {
 
@@ -103,5 +105,31 @@ public class UsuarioService {
         }
 
         repo.delete(user);
+    }
+
+    /**
+     * Genera un TAP único de 6 dígitos para el usuario.
+     * Si el usuario ya tiene TAP se reemplaza por uno nuevo.
+     */
+    public UsuarioDto requestTap(Integer id) {
+        var user = repo.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        Random rng = new Random();
+        int tap;
+        int attempts = 0;
+        do {
+            // TAP: número de 6 dígitos (100000 – 999999)
+            tap = 100_000 + rng.nextInt(900_000);
+            attempts++;
+            if (attempts > 20) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "No se pudo generar un TAP único. Inténtalo de nuevo.");
+            }
+        } while (repo.existsByTap(tap));
+
+        user.setTap(tap);
+        user = repo.save(user);
+        return UsuarioDto.from(user);
     }
 }

@@ -123,4 +123,9 @@ export class OfflineApiService implements ApiService {
   ): Promise<void> {
     await delay();
   }
+
+  async requestTap(_idUsuario: number): Promise<Usuario> {
+    await delay();
+    throw new Error('No hay conexión. Conéctate para solicitar un TAP.');
+  }
 }

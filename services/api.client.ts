@@ -172,4 +172,13 @@ export class RealApiService implements ApiService {
     });
     if (!res.ok) await this.handleError(res, 'Error al eliminar cuenta');
   }
+
+  async requestTap(idUsuario: number): Promise<import('@/types').Usuario> {
+    const res = await fetch(`${API_BASE_URL}/usuarios/${idUsuario}/tap`, {
+      method: 'PUT',
+      headers: this.getHeaders(),
+    });
+    if (!res.ok) await this.handleError(res, 'Error al solicitar TAP');
+    return res.json();
+  }
 }
