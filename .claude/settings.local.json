@@ -90,7 +90,15 @@
       "Bash(dir /s /b \"C:\\\\Users\\\\FA506NC\\\\Downloads\\\\*.pem\")",
       "Bash(findstr /i pem)",
       "PowerShell(ssh -i \"C:\\\\Users\\\\FA506NC\\\\Downloads\\\\ClavesImportantes.pem\" -o StrictHostKeyChecking=no ubuntu@52.201.91.206 \"cd ~/mov/ReciApp && git pull origin claude/recursing-haslett 2>&1 | tail -8\")",
-      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('version','?'\\)\\)\")"
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('version','?'\\)\\)\")",
+      "Bash(curl -s -X POST http://52.201.91.206:3000/api/usuarios/login -H 'Content-Type: application/json' -d '{\"nombre\":\"test\",\"password\":\"test123\"}')",
+      "Bash(curl -s -X PUT http://52.201.91.206:3000/api/usuarios/28/tap -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyOCIsIm5vbWJyZSI6InRlc3RUQVAiLCJwZXJtaXNvcyI6ImNsaWVudGUiLCJpYXQiOjE3NzgxNDM4MzQsImV4cCI6MTc3ODc0ODYzNH0.stwu7ajYwmjJ76f4LHR0tNF3oexm9Lc06IPEt2wKa94')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' -X PUT http://52.201.91.206:3000/api/usuarios/28/tap -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyOCIsIm5vbWJyZSI6InRlc3RUQVAiLCJwZXJtaXNvcyI6ImNsaWVudGUiLCJpYXQiOjE3NzgxNDM4MzQsImV4cCI6MTc3ODc0ODYzNH0.stwu7ajYwmjJ76f4LHR0tNF3oexm9Lc06IPEt2wKa94')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://52.201.91.206:3000/api/usuarios/profile/28 -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyOCIsIm5vbWJyZSI6InRlc3RUQVAiLCJwZXJtaXNvcyI6ImNsaWVudGUiLCJpYXQiOjE3NzgxNDM4MzQsImV4cCI6MTc3ODc0ODYzNH0.stwu7ajYwmjJ76f4LHR0tNF3oexm9Lc06IPEt2wKa94')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' -X PUT http://52.201.91.206:3000/api/usuarios/28/nombre -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyOCIsIm5vbWJyZSI6InRlc3RUQVAiLCJwZXJtaXNvcyI6ImNsaWVudGUiLCJpYXQiOjE3NzgxNDM4MzQsImV4cCI6MTc3ODc0ODYzNH0.stwu7ajYwmjJ76f4LHR0tNF3oexm9Lc06IPEt2wKa94' -H 'Content-Type: application/json' -d '{\"nuevoNombre\":\"x\",\"passwordActual\":\"x\"}')",
+      "Bash(curl -s -X PUT http://52.201.91.206:3000/api/usuarios/27/tap -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNyIsIm5vbWJyZSI6IkFib2wiLCJwZXJtaXNvcyI6ImNsaWVudGUiLCJpYXQiOjE3NzgxNDQ1MzYsImV4cCI6MTc3ODc0OTMzNn0.-yMgomuJEe1fKMpqEwBGnErD9wsdx0VJW_D8XH4Kq-s')",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' -X PUT http://52.201.91.206:3000/api/usuarios/27/tap -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNyIsIm5vbWJyZSI6IkFib2wiLCJwZXJtaXNvcyI6ImNsaWVudGUiLCJpYXQiOjE3NzgxNDQ1MzYsImV4cCI6MTc3ODc0OTMzNn0.-yMgomuJEe1fKMpqEwBGnErD9wsdx0VJW_D8XH4Kq-s')",
+      "Bash(curl -s http://52.201.91.206:3000/api/usuarios/profile/27 -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNyIsIm5vbWJyZSI6IkFib2wiLCJwZXJtaXNvcyI6ImNsaWVudGUiLCJpYXQiOjE3NzgxNDQ1MzYsImV4cCI6MTc3ODc0OTMzNn0.-yMgomuJEe1fKMpqEwBGnErD9wsdx0VJW_D8XH4Kq-s')"
     ]
   }
 }
