@@ -30,8 +30,8 @@ API_BASE = os.environ.get("RECIAPP_API_URL", "http://52.201.91.206:3000")
 
 # Credenciales del usuario administrador que opera el terminal
 # Se pueden configurar vía variables de entorno
-ADMIN_NOMBRE = os.environ.get("RECIAPP_ADMIN_USER", "admin")
-ADMIN_PASSWORD = os.environ.get("RECIAPP_ADMIN_PASS", "admin")
+ADMIN_NOMBRE = os.environ.get("RECIAPP_ADMIN_USER", "terminal")
+ADMIN_PASSWORD = os.environ.get("RECIAPP_ADMIN_PASS", "1234")
 
 # ══════════════════════════════════════════════════════════════
 # Colores para la terminal
