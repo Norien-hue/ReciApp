@@ -39,8 +39,9 @@ function RootLayoutNav() {
   }, [hasChecked]);
 
   // Auth guard: redirigir según estado de autenticación
+  // Solo actúa DESPUÉS de que la conexión se haya comprobado (hasChecked)
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !hasChecked) return;
 
     const inAuthGroup = segments[0] === '(auth)';
     const inModal = segments[0] === 'connection-modal';
@@ -50,7 +51,7 @@ function RootLayoutNav() {
     } else if (token && inAuthGroup) {
       router.replace('/(tabs)/productos');
     }
-  }, [token, isLoading, segments]);
+  }, [token, isLoading, segments, hasChecked]);
 
   if (isLoading) {
     return (

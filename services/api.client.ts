@@ -14,7 +14,7 @@ import type {
 const EC2_IP = '52.201.91.206';
 
 function getApiBaseUrl(): string {
-  return `https://${EC2_IP}:3000/api`;
+  return `http://${EC2_IP}:3000/api`;
 }
 
 const API_BASE_URL = getApiBaseUrl();

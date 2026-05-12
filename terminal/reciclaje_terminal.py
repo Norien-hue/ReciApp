@@ -20,17 +20,13 @@ import sys
 import os
 import time
 import requests
-import urllib3
 from datetime import datetime
-
-# Suprimir warnings de SSL para certificado self-signed
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ══════════════════════════════════════════════════════════════
 # Configuración
 # ══════════════════════════════════════════════════════════════
 
-API_BASE = os.environ.get("RECIAPP_API_URL", "https://52.201.91.206:3000")
+API_BASE = os.environ.get("RECIAPP_API_URL", "http://52.201.91.206:3000")
 
 # Credenciales del usuario administrador que opera el terminal
 # Se pueden configurar vía variables de entorno
@@ -79,8 +75,6 @@ class ReciAppTerminal:
         self.api_base = api_base.rstrip("/")
         self.token = None
         self.session = requests.Session()
-        # Certificado self-signed: desactivar verificacion SSL
-        self.session.verify = False
 
     # ──────────────────────────────────────────────────────────
     # Helpers HTTP
