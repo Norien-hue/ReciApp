@@ -100,7 +100,8 @@
       "Bash(curl -s -o /dev/null -w '%{http_code}' -X PUT http://52.201.91.206:3000/api/usuarios/27/tap -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNyIsIm5vbWJyZSI6IkFib2wiLCJwZXJtaXNvcyI6ImNsaWVudGUiLCJpYXQiOjE3NzgxNDQ1MzYsImV4cCI6MTc3ODc0OTMzNn0.-yMgomuJEe1fKMpqEwBGnErD9wsdx0VJW_D8XH4Kq-s')",
       "Bash(curl -s http://52.201.91.206:3000/api/usuarios/profile/27 -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyNyIsIm5vbWJyZSI6IkFib2wiLCJwZXJtaXNvcyI6ImNsaWVudGUiLCJpYXQiOjE3NzgxNDQ1MzYsImV4cCI6MTc3ODc0OTMzNn0.-yMgomuJEe1fKMpqEwBGnErD9wsdx0VJW_D8XH4Kq-s')",
       "Bash(wsl -e bash -c \"ls -lh /mnt/c/Users/FA506NC/Downloads/reciapp/reci_app/.claude/worktrees/recursing-haslett/api-spring/build/libs/reciapp-api-1.0.0.jar\")",
-      "Bash(curl -s -X POST http://52.201.91.206:3000/api/usuarios/login -H 'Content-Type: application/json' -d '{\"nombre\":\"abol\",\"password\":\"1234\"}')"
+      "Bash(curl -s -X POST http://52.201.91.206:3000/api/usuarios/login -H 'Content-Type: application/json' -d '{\"nombre\":\"abol\",\"password\":\"1234\"}')",
+      "Bash(wsl bash *)"
     ]
   }
 }

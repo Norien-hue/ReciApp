@@ -39,6 +39,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Rutas publicas
                 .requestMatchers("/", "/api/health", "/api/usuarios/login", "/api/usuarios/register").permitAll()
+                // Admin endpoints — solo ADMINISTRADOR
+                .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
                 // Todo lo demas requiere JWT
                 .anyRequest().authenticated()
             )

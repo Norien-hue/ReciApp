@@ -11,4 +11,12 @@ public interface ReciclaRepository extends JpaRepository<Recicla, ReciclaId> {
     List<Recicla> findByIdUsuarioOrderByFechaDescHoraDesc(Integer idUsuario);
 
     long countByIdUsuarioAndTipoAndNumeroBarras(Integer idUsuario, String tipo, Long numeroBarras);
+
+    List<Recicla> findByIdUsuario(Integer idUsuario);
+
+    List<Recicla> findByTipoAndNumeroBarras(String tipo, Long numeroBarras);
+
+    void deleteByIdUsuario(Integer idUsuario);
+
+    void deleteByTipoAndNumeroBarras(String tipo, Long numeroBarras);
 }
