@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -36,8 +37,26 @@ export default function PerfilScreen() {
   const [showTapModal, setShowTapModal] = useState(false);
   const [isRequestingTap, setIsRequestingTap] = useState(false);
 
+  // Estado para eliminar cuenta
+  const [passwordDelete, setPasswordDelete] = useState('');
+  const [showDeleteForm, setShowDeleteForm] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+
   // Estado para comprobar conexión al intentar iniciar sesión
   const [isCheckingConnection, setIsCheckingConnection] = useState(false);
+
+  // Pull-to-refresh: recargar perfil desde la API
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(async () => {
+    if (!user || isGuest) return;
+    setRefreshing(true);
+    try {
+      const api = getApiService();
+      const updated = await api.getProfile(user.id);
+      updateUser(updated);
+    } catch { /* silencioso */ }
+    setRefreshing(false);
+  }, [user, isGuest]);
 
   const handleGuestLogin = async () => {
     setIsCheckingConnection(true);
@@ -144,6 +163,10 @@ export default function PerfilScreen() {
   };
 
   const handleDeleteAccount = () => {
+    if (!passwordDelete.trim()) {
+      Alert.alert('Error', 'Introduce tu contraseña para confirmar la eliminación.');
+      return;
+    }
     Alert.alert(
       'Eliminar cuenta',
       '¿Estás seguro? Esta acción no se puede deshacer.',
@@ -153,15 +176,18 @@ export default function PerfilScreen() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
+            setIsDeletingAccount(true);
             try {
               const api = getApiService();
-              await api.deleteAccount(user!.id, 'mock-password');
+              await api.deleteAccount(user!.id, passwordDelete);
               await logout();
             } catch (e: any) {
               Alert.alert(
                 'Error',
                 e.message || 'No se pudo eliminar la cuenta.'
               );
+            } finally {
+              setIsDeletingAccount(false);
             }
           },
         },
@@ -180,7 +206,11 @@ export default function PerfilScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
+    <ScrollView
+      className="flex-1 bg-gray-50"
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#16a34a']} tintColor="#16a34a" />
+      }>
       {/* Header con nombre */}
       <View className="bg-green-600 px-6 py-6 items-center">
         <View className="bg-white/20 rounded-full p-4 mb-3">
@@ -380,11 +410,43 @@ export default function PerfilScreen() {
               <Text className="text-gray-700 font-semibold">Cerrar sesión</Text>
             </Pressable>
 
-            <Pressable
-              onPress={handleDeleteAccount}
-              className="bg-red-100 rounded-xl py-4 items-center active:bg-red-200">
-              <Text className="text-red-600 font-semibold">Eliminar cuenta</Text>
-            </Pressable>
+            {!showDeleteForm ? (
+              <Pressable
+                onPress={() => setShowDeleteForm(true)}
+                className="bg-red-100 rounded-xl py-4 items-center active:bg-red-200">
+                <Text className="text-red-600 font-semibold">Eliminar cuenta</Text>
+              </Pressable>
+            ) : (
+              <View className="bg-red-50 rounded-xl p-4 border border-red-200">
+                <Text className="text-red-700 font-semibold mb-2">
+                  Introduce tu contraseña para confirmar:
+                </Text>
+                <TextInput
+                  value={passwordDelete}
+                  onChangeText={setPasswordDelete}
+                  placeholder="Contraseña actual"
+                  secureTextEntry
+                  className="border border-red-300 rounded-lg px-3 py-2.5 text-base bg-white mb-3"
+                />
+                <View className="flex-row" style={{ gap: 8 }}>
+                  <Pressable
+                    onPress={() => { setShowDeleteForm(false); setPasswordDelete(''); }}
+                    className="flex-1 bg-gray-200 rounded-lg py-3 items-center active:bg-gray-300">
+                    <Text className="text-gray-700 font-semibold">Cancelar</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={handleDeleteAccount}
+                    disabled={isDeletingAccount}
+                    className="flex-1 bg-red-600 rounded-lg py-3 items-center active:bg-red-700">
+                    {isDeletingAccount ? (
+                      <ActivityIndicator color="white" />
+                    ) : (
+                      <Text className="text-white font-semibold">Eliminar</Text>
+                    )}
+                  </Pressable>
+                </View>
+              </View>
+            )}
           </>
         )}
       </View>

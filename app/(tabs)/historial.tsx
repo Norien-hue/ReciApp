@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { View, FlatList, ActivityIndicator, Text } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { View, FlatList, ActivityIndicator, Text, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '@/store/authStore';
 import { useRecycleStore } from '@/store/recycleStore';
@@ -10,10 +10,19 @@ export default function HistorialScreen() {
   const { user, isGuest } = useAuthStore((s) => ({ user: s.user, isGuest: s.isGuest }));
   const { historial, isLoading, fetchHistorial } = useRecycleStore();
 
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
     if (user) {
       fetchHistorial(user.id);
     }
+  }, [user]);
+
+  const onRefresh = useCallback(async () => {
+    if (!user) return;
+    setRefreshing(true);
+    await fetchHistorial(user.id);
+    setRefreshing(false);
   }, [user]);
 
   // Calcular total de emisiones reducidas del historial
@@ -51,6 +60,9 @@ export default function HistorialScreen() {
           data={historial}
           keyExtractor={(item, index) =>
             `${item.tipo}-${item.numeroBarras}-${item.fecha}-${item.hora}-${index}`
+          }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#16a34a']} tintColor="#16a34a" />
           }
           renderItem={({ item }) => <RecycleHistoryItem item={item} />}
           ListEmptyComponent={

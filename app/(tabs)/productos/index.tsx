@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { View, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useProductStore } from '@/store/productStore';
 import SearchBar from '@/components/SearchBar';
@@ -16,8 +16,16 @@ export default function ProductosScreen() {
     getFilteredProductos,
   } = useProductStore();
 
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
     fetchProductos();
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchProductos();
+    setRefreshing(false);
   }, []);
 
   const productos = getFilteredProductos();
@@ -34,6 +42,9 @@ export default function ProductosScreen() {
         <FlatList
           data={productos}
           keyExtractor={(item) => `${item.tipo}-${item.numeroBarras}`}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#16a34a']} tintColor="#16a34a" />
+          }
           renderItem={({ item }) => (
             <ProductCard
               producto={item}

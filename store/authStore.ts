@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Usuario } from '@/types';
-import { getApiService } from '@/services';
+import { getApiService, getRealApiService } from '@/services';
 // MOCK_TOKEN y MOCK_USER se usan en OfflineApiService, no aquí directamente
 
 const TOKEN_KEY = 'reci_app_token';
@@ -95,6 +95,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: async () => {
+    // Limpiar token del servicio API
+    getRealApiService().setToken(null);
     // Borrar TODAS las claves de la app del AsyncStorage
     await AsyncStorage.multiRemove(ALL_STORAGE_KEYS);
     set({ token: null, user: null, isGuest: false });
@@ -110,6 +112,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       const userJson = await AsyncStorage.getItem(USER_KEY);
       if (token && userJson) {
         const user = JSON.parse(userJson) as Usuario;
+        // Restaurar el token en el servicio API para que las peticiones
+        // protegidas incluyan el header Authorization
+        getRealApiService().setToken(token);
         set({ token, user, isLoading: false, isGuest: false });
         return true;
       } else {

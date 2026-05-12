@@ -191,7 +191,7 @@ def limpiar_pantalla():
 def mostrar_banner():
     print()
     print(verde("  ╔══════════════════════════════════════════════════════════╗"))
-    print(verde("  ║") + negrita("        ♻  RECIAPP — Terminal de Reciclaje  ♻         ") + verde("║"))
+    print(verde("  ║") + negrita("        ♻  RECIAPP — Terminal de Reciclaje  ♻             ") + verde("║"))
     print(verde("  ╚══════════════════════════════════════════════════════════╝"))
     print()
 
@@ -227,7 +227,7 @@ def mostrar_confirmacion(resultado: dict):
 
     print()
     print(verde("  ╔══════════════════════════════════════════════════════════╗"))
-    print(verde("  ║") + negrita("            ✅  RECICLAJE REGISTRADO  ✅                ") + verde("║"))
+    print(verde("  ║") + negrita("            ✅  RECICLAJE REGISTRADO  ✅                 ") + verde("║"))
     print(verde("  ╚══════════════════════════════════════════════════════════╝"))
     print()
     print(f"  {negrita('Producto:')}       {cian(reciclaje['productoNombre'])}")
