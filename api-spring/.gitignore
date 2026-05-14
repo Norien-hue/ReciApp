@@ -1,7 +1,10 @@
-build/
 .gradle/
 !gradle/wrapper/gradle-wrapper.jar
 *.class
 *.jar
 !gradle/wrapper/*.jar
+!build/libs/reciapp-api-*.jar
+build/
+!build/
+!build/libs/
 !build/libs/reciapp-api-*.jar
