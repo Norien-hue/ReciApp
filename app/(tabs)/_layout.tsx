@@ -1,64 +1,49 @@
-// ============================================================
-// app/(tabs)/_layout.tsx
-// ============================================================
-// Layout de tabs con barra de navegación inferior usando Paper
-// ============================================================
-
-import { Tabs } from "expo-router";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useTheme } from "react-native-paper";
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabsLayout() {
-  const theme = useTheme();
-
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
+        tabBarActiveTintColor: '#16a34a',
+        tabBarInactiveTintColor: '#9ca3af',
         tabBarStyle: {
-          backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.outline,
-          borderTopWidth: 0.5,
-          height: 65,
-          paddingBottom: 8,
-          paddingTop: 6,
+          backgroundColor: '#ffffff',
+          borderTopColor: '#e5e7eb',
         },
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: "600",
+        headerStyle: {
+          backgroundColor: '#16a34a',
         },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Inicio",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" size={size} color={color} />
-          ),
-        }}
-      />
+        headerTintColor: '#ffffff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
       <Tabs.Screen
         name="productos"
         options={{
-          title: "Productos",
+          title: 'Productos',
+          headerShown: false, // El stack interno tiene su propio header
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="barcode-scan"
-              size={size}
-              color={color}
-            />
+            <Ionicons name="leaf" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="ajustes"
+        name="historial"
         options={{
-          title: "Ajustes",
+          title: 'Historial',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cog" size={size} color={color} />
+            <Ionicons name="time" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="perfil"
+        options={{
+          title: 'Perfil',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
           ),
         }}
       />
