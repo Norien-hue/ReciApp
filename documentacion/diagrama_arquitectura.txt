@@ -1,0 +1,36 @@
+
+    +---------------------+     +------------------------+     +-------------------+
+    |   App Movil         |     |  App Escritorio        |     |  Terminal Python   |
+    |   React Native 0.81 |     |  JavaFX 25 / Java 24  |     |  Python 3.10+     |
+    |   Expo SDK 54       |     |  Gson, ControlsFX,    |     |  requests,        |
+    |   TypeScript        |     |  BCrypt               |     |  ANSI Colors      |
+    +----------+----------+     +----------+------------+     +---------+---------+
+               |                           |                            |
+               |       HTTP + JWT          |        HTTP + JWT          |
+               +---------------------------+----------------------------+
+                                           |
+                                           v
+                            +-----------------------------+
+                            |   API REST (Spring Boot)    |
+                            |   Java 21 - Puerto :3000    |
+                            |-----------------------------|
+                            |  SecurityConfig (JWT+CORS)  |
+                            |  UsuarioController          |
+                            |  AdminController (CRUD)     |
+                            |  JwtAuthFilter              |
+                            |  Spring Data JPA            |
+                            +-------------+---------------+
+                                          |
+                                     JDBC |
+                                          v
+                            +-----------------------------+
+                            |     MySQL 8.x (InnoDB)      |
+                            |     Puerto :3306            |
+                            |-----------------------------|
+                            |  usuarios                   |
+                            |  productos                  |
+                            |  recicla                    |
+                            +-----------------------------+
+
+                            Desplegado en AWS EC2
+                            Ubuntu 22.04 LTS

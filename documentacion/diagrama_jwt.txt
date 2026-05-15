@@ -1,0 +1,40 @@
+
+  Cliente                          API (Spring Boot)                     MySQL
+     |                                    |                                |
+     |  POST /api/usuarios/login          |                                |
+     |  { nombre, password }              |                                |
+     |----------------------------------->|                                |
+     |                                    |  SELECT * FROM Usuarios        |
+     |                                    |  WHERE Nombre = ?              |
+     |                                    |------------------------------->|
+     |                                    |                                |
+     |                                    |          Usuario encontrado    |
+     |                                    |<-------------------------------|
+     |                                    |                                |
+     |                                    |  BCrypt.matches(password,hash) |
+     |                                    |  JwtService.generateToken()    |
+     |                                    |                                |
+     |  200 OK                            |                                |
+     |  { token: "eyJ...",                |                                |
+     |    usuario: {id,nombre,permisos} } |                                |
+     |<-----------------------------------|                                |
+     |                                    |                                |
+     |                                    |                                |
+     |  GET /api/productos                |                                |
+     |  Authorization: Bearer eyJ...      |                                |
+     |----------------------------------->|                                |
+     |                                    |  JwtAuthFilter:                |
+     |                                    |  - Extraer token               |
+     |                                    |  - Validar firma y expiracion  |
+     |                                    |  - SecurityContext.setAuth()   |
+     |                                    |                                |
+     |                                    |  SELECT * FROM Productos       |
+     |                                    |------------------------------->|
+     |                                    |                                |
+     |                                    |        Lista de productos      |
+     |                                    |<-------------------------------|
+     |                                    |                                |
+     |  200 OK                            |                                |
+     |  [ {producto1}, {producto2}, ... ]  |                                |
+     |<-----------------------------------|                                |
+     |                                    |                                |

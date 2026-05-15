@@ -47,6 +47,9 @@ export default function TabsLayout() {
           ),
         }}
       />
+      {/* Ocultar pantallas que no deben aparecer como tabs */}
+      <Tabs.Screen name="index" options={{ href: null }} />
+      <Tabs.Screen name="ajustes" options={{ href: null }} />
     </Tabs>
   );
 }

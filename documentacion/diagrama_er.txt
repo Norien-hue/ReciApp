@@ -1,0 +1,47 @@
+
+  +------------------------------------------+
+  |              USUARIOS                    |
+  |------------------------------------------|
+  | PK  Id_Usuario    INT AUTO_INCREMENT     |
+  |     Nombre        VARCHAR(50) UNIQUE     |
+  |     Hash_Contrasena VARCHAR(100)         |
+  |     Permisos      VARCHAR(15)            |
+  |                   'cliente'|'admin'      |
+  |     Emisiones_Reducidas FLOAT DEFAULT 0  |
+  |     TAP           INT NULLABLE           |
+  +------------------+-----------------------+
+                     |
+                     | 1
+                     |
+                     | N
+                     |
+  +------------------+------------------------------------------+
+  |                       RECICLA                               |
+  |-------------------------------------------------------------|
+  | PK,FK  Id_Usuario     INT                                   |
+  | PK,FK  Tipo           VARCHAR(10)                           |
+  | PK,FK  Numero_barras  BIGINT                                |
+  | PK     Fecha          DATE                                  |
+  | PK     Hora           TIME                                  |
+  +---------------------------+---+-----------------------------+
+                              |   |
+                              | N |
+                              |   |
+                              | 1 |
+                              |   |
+  +---------------------------+---+-----------------------------+
+  |                     PRODUCTOS                               |
+  |-------------------------------------------------------------|
+  | PK  Tipo              VARCHAR(10)   (EAN13, UPC, etc.)      |
+  | PK  Numero_barras     BIGINT                                |
+  |     Nombre            VARCHAR(50)                           |
+  |     Emisiones_Reducibles FLOAT      (kg CO2)                |
+  |     Material          VARCHAR(15)   (PET, Vidrio, Aluminio) |
+  |     Imagen            LONGTEXT      (Base64)                |
+  +-------------------------------------------------------------+
+
+  Relaciones:
+    Usuarios  1 ---< N  Recicla   (Un usuario tiene N reciclajes)
+    Productos 1 ---< N  Recicla   (Un producto es reciclado N veces)
+
+  Clave primaria de Recicla: (Id_Usuario, Tipo, Numero_barras, Fecha, Hora)

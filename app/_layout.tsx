@@ -2,6 +2,7 @@ import '../global.css';
 import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { PaperProvider } from 'react-native-paper';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
 import { useConnectionStore } from '@/store/connectionStore';
@@ -89,7 +90,9 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <RootLayoutNav />
+      <PaperProvider>
+        <RootLayoutNav />
+      </PaperProvider>
     </SafeAreaProvider>
   );
 }
